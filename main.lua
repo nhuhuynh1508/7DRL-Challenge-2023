@@ -1,5 +1,16 @@
 require 'globals'
 
+Game = require 'src.game'
+
 function love.load()
-  print(math.min(2,5))
+  Gamestate.registerEvents()
+  Gamestate.switch(Game)
+end
+
+function love.update(dt)
+
+end
+
+function love.draw()
+
 end
