@@ -30,7 +30,7 @@ end
 
 function Tablet:update(dt)
   if self.hp == 0 then
-    isDead = true
+    self.isDead = true
   end
 end
 
@@ -56,6 +56,8 @@ function Tablet:draw()
         end
       end
     end
+
+    print('sup')
     love.graphics.circle('line',self.x,self.y,10)
   end
 end

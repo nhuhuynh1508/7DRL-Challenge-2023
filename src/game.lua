@@ -1,20 +1,35 @@
-local Tablet = require 'src/tablets/tablet'
+local Tablet = require 'src.tablets.tablet'
 
 local Game = {}
 
 function Game:enter()
-  self.tablet1 = Tablet(100,100,"blue","archer", 10, 1, 978)
-  -- self.tablet2 = Tablet(100,100,"blue", 10, 1, 278)
+  self.allies = {}
+  self.enemies = {}
+
+  self:setup()
+end
+
+function Game:setup()
+  table.insert(self.allies, Tablet(100, 100, "blue", "archer", 10, 1, 978))
+  table.insert(self.enemies, Tablet(100, 300, "blue", "archer", 10, 1, 978))
 end
 
 function Game:update(dt)
-  self.tablet1:update(dt)
-  -- self.tablet2:update(dt)
+  for _, ally in ipairs(self.allies) do
+    ally:update(dt)
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:update(dt)
+  end
 end
 
 function Game:draw()
-  self.tablet1:draw()
-  -- self.tablet2:draw()
+  for _, ally in ipairs(self.allies) do
+    ally:draw()
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:draw()
+  end
 end
 
 return Game
