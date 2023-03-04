@@ -11,16 +11,16 @@ function Tablet:initialize(x,y,type, atk, atkspd, maxhp)
   self.maxhp = maxhp
   self.hp = maxhp
   self.isDead = false
+end
 
-  function receiveDamage(damage)
-    print("HP now: ", self.hp)
-    print("Receive damage", damage)
-    self.hp = math.max(self.hp - damage,0)
-  end
+function Tablet:receiveDamage(damage)
+  print("HP now: ", self.hp)
+  print("Receive damage", damage)
+  self.hp = math.max(self.hp - damage,0)
+end
 
-  function healHP(heal)
-    self.hp = math.min(self.hp + heal, self.maxhp)
-  end
+function Tablet:healHP(heal)
+  self.hp = math.min(self.hp + heal, self.maxhp)
 end
 
 function Tablet:setup()
@@ -66,11 +66,11 @@ end
 function Tablet:keypressed(key)
   if key == 'a' then
     print("Pressed A")
-    receiveDamage(20)
+    self:receiveDamage(20)
   end
   if key == 's' then
     print("Pressed S")
-    healHP(20)
+    self:healHP(20)
   end
 end
 
