@@ -1,8 +1,11 @@
 local Tablet = require 'src.tablets.tablet'
+local Field = require 'src.playfield.field'
 
 local Game = {}
 
 function Game:enter()
+  self.theme_color = {219,161,89}
+
   self.allies = {}
   self.enemies = {}
 
@@ -10,8 +13,20 @@ function Game:enter()
 end
 
 function Game:setup()
-  table.insert(self.allies, Tablet(100, 100, "blue", "archer", 10, 1, 978))
-  table.insert(self.enemies, Tablet(100, 300, "blue", "archer", 10, 1, 978))
+  
+  battlefield = Field()
+
+  blue = {0,0,255}
+  red ={255,0,0}
+  table.insert(self.allies, Tablet(100, 100, "archer", 10, 1, 258, blue))
+  table.insert(self.enemies, Tablet(100, 300, "archer", 10, 1, 138, red))
+
+  for _, ally in ipairs(self.allies) do
+    ally:setup(self.allies,self.enemies)
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:setup(self.enemies,self.allies)
+  end
 end
 
 function Game:update(dt)
@@ -24,20 +39,14 @@ function Game:update(dt)
 end
 
 function Game:draw()
-  for _, ally in ipairs(self.allies) do
-    ally:draw()
-  end
-  for _, enemy in ipairs(self.enemies) do
-    enemy:draw()
-  end
-end
-
 ---UI for health, money, and slots
 -- function Game:load()
 --   heart = love.graphics.newImage('assets/heart.png')
 -- end
 
-function Game:draw()
+  --Theme color: kaki
+  love.graphics.setColor(love.math.colorFromBytes(self.theme_color))
+
   love.graphics.rectangle('line', 10, 750, 580, 20)
   love.graphics.line(290, 750, 290, 770)
 
@@ -48,6 +57,25 @@ function Game:draw()
   love.graphics.line(360, 600, 360, 680)
   love.graphics.line(480, 600, 480, 680)
 
+  --battlefield
+  battlefield:draw(self.theme_color)
+
+  ---draw tablets
+  for _, ally in ipairs(self.allies) do
+    ally:draw()
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:draw()
+  end
+end
+
+function Game:keypressed(key)
+  for _, ally in ipairs(self.allies) do
+    ally:keypressed(key)
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:keypressed(key)
+  end
 end
 
 return Game
