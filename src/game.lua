@@ -1,7 +1,7 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
 local Map = require 'src.map'
-local HUD = require 'src.hud'
+local HUD = require 'src.hud.hud'
 
 local Game = {}
 
