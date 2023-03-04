@@ -10,8 +10,8 @@ function Game:enter()
 end
 
 function Game:setup()
-  table.insert(self.allies, Tablet(100, 100, "blue", "archer", 10, 1, 978))
-  table.insert(self.enemies, Tablet(100, 300, "blue", "archer", 10, 1, 978))
+  table.insert(self.allies, Tablet(100, 100, "archer", 10, 1, 308))
+  table.insert(self.enemies, Tablet(100, 300, "archer", 10, 1, 978))
 end
 
 function Game:update(dt)
@@ -29,6 +29,15 @@ function Game:draw()
   end
   for _, enemy in ipairs(self.enemies) do
     enemy:draw()
+  end
+end
+
+function Game:keypressed(key)
+  for _, ally in ipairs(self.allies) do
+    ally:keypressed(key)
+  end
+  for _, enemy in ipairs(self.enemies) do
+    enemy:keypressed(key)
   end
 end
 
