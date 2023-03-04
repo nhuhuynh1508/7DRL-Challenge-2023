@@ -1,4 +1,5 @@
 require 'globals'
+require 'assets'
 
 Game = require 'src.game'
 

@@ -36,29 +36,29 @@ end
 
 function Tablet:draw()
   if not isDead then
-    --Draw Health Bar
+    --Draw health bar for tablets
     if (self.maxhp > 500) then
       local healthBarWidth = 1.5*healthBarWidth
       if (self.hp > 0.5*self.maxhp) then
-        love.graphics.setColor(0,200,0)
+        love.graphics.setColor(0, 200, 0)
       elseif (self.hp > 0.3*self.maxhp) then
-        love.graphics.setColor(255,255,0)
+        love.graphics.setColor(255, 255, 0)
       else
-        love.graphics.setColor(255,0,0)
+        love.graphics.setColor(255, 0, 0)
       end
-      love.graphics.rectangle('fill',self.x-healthBarWidth/2,self.y-25,healthBarWidth*self.hp/self.maxhp,healthBarHeight)
-      love.graphics.setColor(255,255,255)
-      love.graphics.rectangle('line',self.x-healthBarWidth/2,self.y-25,healthBarWidth,healthBarHeight)
+      love.graphics.rectangle('fill', self.x-healthBarWidth/2, self.y-25, healthBarWidth*self.hp/self.maxhp, healthBarHeight)
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-25, healthBarWidth, healthBarHeight)
       segment = self.maxhp/100
       for i = 0, math.ceil(segment)-1 do
         if i < (math.ceil(segment)-1) then
-          love.graphics.rectangle('line',self.x-healthBarWidth/2+i*healthBarWidth/segment,self.y-25,healthBarWidth/segment,healthBarHeight)
+          love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment, self.y-25, healthBarWidth/segment, healthBarHeight)
         end
       end
     end
 
     print('sup')
-    love.graphics.circle('line',self.x,self.y,10)
+    love.graphics.circle('line', self.x, self.y,10)
   end
 end
 
