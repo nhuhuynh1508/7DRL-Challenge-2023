@@ -1,5 +1,7 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
+local Map = require 'src.map'
+local HUD = require 'src.hud'
 
 local Game = {}
 
@@ -9,6 +11,9 @@ function Game:enter()
   self.cellSize = 60
   self.allies = {}
   self.enemies = {}
+
+  self.map = Map()
+  self.hud = HUD()
 
   self:setup()
 end
@@ -36,26 +41,14 @@ function Game:update(dt)
   for _, enemy in ipairs(self.enemies) do
     enemy:update(dt)
   end
+
+  self.map:update(dt)
+  self.hud:update(dt)
 end
 
 function Game:draw()
----UI for health, money, and slots
--- function Game:load()
---   heart = love.graphics.newImage('assets/heart.png')
--- end
-
-  --Theme color: kaki
-  love.graphics.setColor(love.math.colorFromBytes(self.theme_color))
-
-  love.graphics.rectangle('line', 10, 750, 580, 20)
-  love.graphics.line(290, 750, 290, 770)
-
---slots for tablets
-  love.graphics.rectangle('line', 0, 600, 600, 80)
-  love.graphics.line(120, 600, 120, 680)
-  love.graphics.line(240, 600, 240, 680)
-  love.graphics.line(360, 600, 360, 680)
-  love.graphics.line(480, 600, 480, 680)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(Sprites.base, 0, 0, 0, 2, 2)
 
   --battlefield
   battlefield:draw(self.theme_color, self.isFighting)
@@ -67,6 +60,10 @@ function Game:draw()
   for _, enemy in ipairs(self.enemies) do
     enemy:draw()
   end
+  
+
+  self.map:draw()
+  self.hud:draw()
 end
 
 function Game:keypressed(key)
