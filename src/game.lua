@@ -5,7 +5,8 @@ local Game = {}
 
 function Game:enter()
   self.theme_color = {219,161,89}
-
+  self.isFighting = false
+  self.cellSize = 60
   self.allies = {}
   self.enemies = {}
 
@@ -13,13 +14,12 @@ function Game:enter()
 end
 
 function Game:setup()
-  
-  battlefield = Field()
-
+  battlefield = Field(self.cellSize,10)
   blue = {0,0,255}
   red ={255,0,0}
-  table.insert(self.allies, Tablet(100, 100, "archer", 10, 1, 258, blue))
-  table.insert(self.enemies, Tablet(100, 300, "archer", 10, 1, 138, red))
+  table.insert(self.allies, Tablet(100, 100, "archer", 10, 0.5, 100, blue, self.cellSize))
+  table.insert(self.allies, Tablet(300, 100, "archer", 10, 0.5, 100, blue, self.cellSize))
+  table.insert(self.enemies, Tablet(100, 300, "archer", 10, 0.7, 200, red, self.cellSize))
 
   for _, ally in ipairs(self.allies) do
     ally:setup(self.allies,self.enemies)
@@ -58,7 +58,7 @@ function Game:draw()
   love.graphics.line(480, 600, 480, 680)
 
   --battlefield
-  battlefield:draw(self.theme_color)
+  battlefield:draw(self.theme_color, self.isFighting)
 
   ---draw tablets
   for _, ally in ipairs(self.allies) do

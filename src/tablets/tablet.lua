@@ -3,38 +3,42 @@ local Tablet = Class('Tablet')
 healthBarWidth = 45
 healthBarHeight = 7
 
-function Tablet:initialize(x, y, type, atk, atkspd, maxhp, color)
+function Tablet:initialize(x, y, type, atk, atkspd, maxhp, color, cellSize)
   self.x, self.y = x,y
+  self.offset = cellSize/2
   self.atk = atk or 1
   self.atkspd = atkspd or 1
   self.maxhp = maxhp
   self.hp = maxhp
-  self.isDead = false
   self.color = color
-  print(self.color[1],self.color[2],self.color[3])
+  self.skillTime = 10
+  self.type = type
+
+  self.isDead = false
+  self.norAtkWait = false
+  self.skillWait = false
+  
 end
 
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
-  print(self.allies)
-  print(self.enemies)
-  print("----------------")
-end
-
-function Tablet:receiveDamage(damage)
-  print("HP now: ", self.hp)
-  print("Receive damage", damage)
-  self.hp = math.max(self.hp - damage,0)
-end
-
-function Tablet:healHP(heal)
-  self.hp = math.min(self.hp + heal, self.maxhp)
 end
 
 function Tablet:update(dt)
+  Timer.update(dt)
   if self.hp == 0 then
     self.isDead = true
+  end
+  if not self.isDead then
+    if not self.norAtkWait then
+      self.norAtkWait = true
+      self:normalAttack()
+    end
+    if not self.skillWait then
+      self.skillWait = true
+      self:skillUse()
+    end
   end
 end
 
@@ -63,8 +67,9 @@ function Tablet:draw()
         love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment, self.y-25, healthBarWidth/segment, healthBarHeight)
       end
     end
+
     love.graphics.circle('fill', self.x, self.y,10)
-    
+
     love.graphics.setColor(1,1,1)
   end
 end
@@ -73,18 +78,48 @@ function Tablet:keypressed(key)
   if not self.isDead then
     if key == 'a' then
       print("Pressed A")
-      self:normalAttack(self.enemies)
+      -- self:normalAttack()
+      self:receiveDamage(50)
     end
     if key == 's' then
       print("Pressed S")
+      self:healHP(20)
     end
   end
 end
 
-function Tablet:normalAttack(enemies)
-  for _, enemy in ipairs(enemies) do
+function Tablet:normalAttack(waiting_time)
+  self.norAtkWait = true
+  for _, enemy in ipairs(self.enemies) do
     enemy:receiveDamage(self.atk)
   end
+  waiting_time = 1/self.atkspd
+  Timer.after(waiting_time, function() self:resetNorAtkWait() end)
+end
+
+function Tablet:skillUse()
+  self.skillWait = true
+  for _, ally in ipairs(self.allies) do
+    print("Skill use by ", type)
+    ally:healHP(10)
+  end
+  Timer.after(self.skillTime, function() self:resetSkillWait() end)
+end
+
+function Tablet:receiveDamage(damage)
+  self.hp = math.max(self.hp - damage,0)
+end
+
+function Tablet:healHP(heal)
+  self.hp = math.min(self.hp + heal, self.maxhp)
+end
+
+function Tablet:resetSkillWait()
+  self.skillWait = false
+end
+
+function Tablet:resetNorAtkWait()
+  self.norAtkWait = false
 end
 
 return Tablet
