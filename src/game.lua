@@ -23,9 +23,11 @@ function Game:setup()
   battlefield = Field()
   blue = {0,0,255}
   red ={255,0,0}
-  table.insert(self.allies, Tablet(0, 0, 10, 0.5, 100, blue))
-  table.insert(self.allies, Tablet(0, 1, 10, 0.5, 100, blue))
-  table.insert(self.enemies, Tablet(3, 5, 10, 0.7, 200, red))
+  table.insert(self.enemies, Tablet(0, 0, 10, 0.2, 100, blue))
+  -- table.insert(self.enemies, Tablet(1, 1, 10, 0.2, 100, blue))
+  -- table.insert(self.enemies, Tablet(2, 2, 5, 0.2, 100, blue))
+  table.insert(self.allies, Tablet(4, 5, 4, 0.2, 200, red))
+  table.insert(self.allies, Tablet(2, 5, 4, 0.2, 200, red))
 
   for _, ally in ipairs(self.allies) do
     ally:setup(self.allies,self.enemies)
