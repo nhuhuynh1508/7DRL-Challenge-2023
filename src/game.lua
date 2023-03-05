@@ -1,30 +1,31 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
-local Map = require 'src.map'
-local HUD = require 'src.hud.hud'
 
 local Game = {}
 
 function Game:enter()
-  self.theme_color = {219,161,89}
-  self.isFighting = false
-  self.cellSize = 60
+  --Global variable
+  theme_color = {219,161,89}
+  isFighting = false
+    --Battlefield relating variable
+    cellSize = 60
+    spacing = 10
+    fieldOffset = {(400 - 5*cellSize - 4*spacing)/2, (600 - 6*cellSize - 5*spacing)/2}
+    print("Field offset", fieldOffset[1], fieldOffset[2])
+  --Self variable
   self.allies = {}
   self.enemies = {}
-
-  self.map = Map()
-  self.hud = HUD()
 
   self:setup()
 end
 
 function Game:setup()
-  battlefield = Field(self.cellSize,10)
+  battlefield = Field()
   blue = {0,0,255}
   red ={255,0,0}
-  table.insert(self.allies, Tablet(100, 100, "archer", 10, 0.5, 100, blue, self.cellSize))
-  table.insert(self.allies, Tablet(300, 100, "archer", 10, 0.5, 100, blue, self.cellSize))
-  table.insert(self.enemies, Tablet(100, 300, "archer", 10, 0.7, 200, red, self.cellSize))
+  table.insert(self.allies, Tablet(0, 0, 10, 0.5, 100, blue))
+  table.insert(self.allies, Tablet(0, 1, 10, 0.5, 100, blue))
+  table.insert(self.enemies, Tablet(3, 5, 10, 0.7, 200, red))
 
   for _, ally in ipairs(self.allies) do
     ally:setup(self.allies,self.enemies)
@@ -41,17 +42,24 @@ function Game:update(dt)
   for _, enemy in ipairs(self.enemies) do
     enemy:update(dt)
   end
-
-  self.map:update(dt)
-  self.hud:update(dt)
 end
 
 function Game:draw()
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.base, 0, 0, 0, 2, 2)
+  --Theme color: kaki
+  love.graphics.setColor(love.math.colorFromBytes(theme_color))
+
+  love.graphics.rectangle('line', 10, 750, 580, 20)
+  love.graphics.line(290, 750, 290, 770)
+
+--slots for tablets
+  love.graphics.rectangle('line', 0, 600, 600, 80)
+  love.graphics.line(120, 600, 120, 680)
+  love.graphics.line(240, 600, 240, 680)
+  love.graphics.line(360, 600, 360, 680)
+  love.graphics.line(480, 600, 480, 680)
 
   --battlefield
-  battlefield:draw(self.theme_color, self.isFighting)
+  battlefield:draw()
 
   ---draw tablets
   for _, ally in ipairs(self.allies) do
@@ -60,10 +68,6 @@ function Game:draw()
   for _, enemy in ipairs(self.enemies) do
     enemy:draw()
   end
-  
-
-  self.map:draw()
-  self.hud:draw()
 end
 
 function Game:keypressed(key)

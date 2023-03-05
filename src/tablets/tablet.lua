@@ -1,10 +1,12 @@
 local Tablet = Class('Tablet')
 
-healthBarWidth = 45
-healthBarHeight = 7
+healthBarWidth = 50
+healthBarHeight = 6
 
-function Tablet:initialize(x, y, type, atk, atkspd, maxhp, color, cellSize)
-  self.x, self.y = x,y
+function Tablet:initialize(column, row, atk, atkspd, maxhp, color)
+  self.row, self.column = row, column
+  self.gap = spacing + cellSize
+  self.x, self.y = fieldOffset[1] + self.gap*column + cellSize/2, fieldOffset[2] + self.gap*row + cellSize/2
   self.offset = cellSize/2
   self.atk = atk or 1
   self.atkspd = atkspd or 1
@@ -12,7 +14,7 @@ function Tablet:initialize(x, y, type, atk, atkspd, maxhp, color, cellSize)
   self.hp = maxhp
   self.color = color
   self.skillTime = 10
-  self.type = type
+  self.type = 'archer'
 
   self.isDead = false
   self.norAtkWait = false
@@ -23,6 +25,7 @@ end
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
+  print(name)
 end
 
 function Tablet:update(dt)
@@ -57,18 +60,18 @@ function Tablet:draw()
     else
       love.graphics.setColor(love.math.colorFromBytes(255, 0, 0))
     end
-    love.graphics.rectangle('fill', self.x-healthBarWidth/2, self.y-25, healthBarWidth*self.hp/self.maxhp, healthBarHeight)
+    love.graphics.rectangle('fill', self.x-healthBarWidth/2, self.y-30, healthBarWidth*self.hp/self.maxhp, healthBarHeight)
     love.graphics.setColor(love.math.colorFromBytes(self.color))
-    love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-25, healthBarWidth, healthBarHeight)
-    love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-25, healthBarWidth, healthBarHeight)
+    love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-30, healthBarWidth, healthBarHeight)
+    love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-30, healthBarWidth, healthBarHeight)
     segment = self.maxhp/100
     for i = 0, math.ceil(segment)-1 do
       if i < (math.ceil(segment)-1) then
-        love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment, self.y-25, healthBarWidth/segment, healthBarHeight)
+        love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment, self.y-30, healthBarWidth/segment, healthBarHeight)
       end
     end
 
-    love.graphics.circle('fill', self.x, self.y,10)
+    love.graphics.circle('fill', self.x, self.y,15)
 
     love.graphics.setColor(1,1,1)
   end
@@ -100,7 +103,7 @@ end
 function Tablet:skillUse()
   self.skillWait = true
   for _, ally in ipairs(self.allies) do
-    print("Skill use by ", type)
+    -- print("Skill use by ", self.type)
     ally:healHP(10)
   end
   Timer.after(self.skillTime, function() self:resetSkillWait() end)
