@@ -24,6 +24,7 @@ function Tablet:initialize(column, row, atk, atkspd, maxhp, color)
   self.norAtkWait = false
   self.skillWait = false
   
+  self.timer = Timer.new()
 end
 
 function Tablet:setup(allies, enemies)
@@ -33,7 +34,7 @@ function Tablet:setup(allies, enemies)
 end
 
 function Tablet:update(dt)
-  Timer.update(dt)
+  self.timer:update(dt)
   if self.hp == 0 then
     self.isDead = true
   end
@@ -99,12 +100,12 @@ function Tablet:normalAttack(waiting_time)
   end
   for _, enemy in ipairs(self.targetedEnemies) do
     table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
-    Timer.after(0.7, function() enemy:receiveDamage(self.atk) end)
+    self.timer:after(0.7, function() enemy:receiveDamage(self.atk) end)
 
   end
   waiting_time = 1/self.atkspd
   print(waiting_time)
-  Timer.after(waiting_time, function() self:resetNorAtkWait() end)
+  self.timer:after(waiting_time, function() self:resetNorAtkWait() end)
 end
 
 function Tablet:skillUse()
@@ -113,7 +114,7 @@ function Tablet:skillUse()
     -- print("Skill use by ", self.type)
     ally:healHP(10)
   end
-  Timer.after(self.skillCD, function() self:resetSkillWait() end)
+  self.timer:after(self.skillCD, function() self:resetSkillWait() end)
 end
 
 function Tablet:receiveDamage(damage)
