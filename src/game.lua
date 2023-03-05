@@ -11,10 +11,9 @@ function Game:enter()
     cellSize = 60
     spacing = 10
     fieldOffset = {(400 - 5*cellSize - 4*spacing)/2, (600 - 6*cellSize - 5*spacing)/2}
-    print("Field offset", fieldOffset[1], fieldOffset[2])
   --Self variable
-  self.allies = {}
-  self.enemies = {}
+  self.teamBlue = {}
+  self.teamRed = {}
 
   self:setup()
 end
@@ -23,26 +22,30 @@ function Game:setup()
   battlefield = Field()
   blue = {0,0,255}
   red ={255,0,0}
-  table.insert(self.enemies, Tablet(0, 0, 10, 0.2, 100, blue))
-  -- table.insert(self.enemies, Tablet(1, 1, 10, 0.2, 100, blue))
-  -- table.insert(self.enemies, Tablet(2, 2, 5, 0.2, 100, blue))
-  table.insert(self.allies, Tablet(4, 5, 4, 0.2, 200, red))
-  table.insert(self.allies, Tablet(2, 5, 4, 0.2, 200, red))
+  table.insert(self.teamBlue, Tablet(0, 0, 10, 0.7, 100, blue))
+  table.insert(self.teamBlue, Tablet(1, 1, 10, 0.2, 200, blue))
+  table.insert(self.teamBlue, Tablet(2, 2, 20, 0.7, 300, blue))
+  table.insert(self.teamRed, Tablet(2, 5, 20, 1.5, 200, red))
+  table.insert(self.teamRed, Tablet(4, 5, 10, 1.7, 200, red))
 
-  for _, ally in ipairs(self.allies) do
-    ally:setup(self.allies,self.enemies)
+  for _, member in ipairs(self.teamBlue) do
+    member:setup(self.teamBlue,self.teamRed)
   end
-  for _, enemy in ipairs(self.enemies) do
-    enemy:setup(self.enemies,self.allies)
+  for _, member in ipairs(self.teamRed) do
+    member:setup(self.teamRed,self.teamBlue)
   end
 end
 
 function Game:update(dt)
-  for _, ally in ipairs(self.allies) do
-    ally:update(dt)
+  --Remove dead tablets
+  self:destroyDeadTablets()
+
+  --Update tablets
+  for _, member in ipairs(self.teamBlue) do
+    member:update(dt)
   end
-  for _, enemy in ipairs(self.enemies) do
-    enemy:update(dt)
+  for _, member in ipairs(self.teamRed) do
+    member:update(dt)
   end
 end
 
@@ -64,20 +67,49 @@ function Game:draw()
   battlefield:draw()
 
   ---draw tablets
-  for _, ally in ipairs(self.allies) do
-    ally:draw()
+  for _, member in ipairs(self.teamBlue) do
+    member:draw()
   end
-  for _, enemy in ipairs(self.enemies) do
-    enemy:draw()
+  for _, member in ipairs(self.teamRed) do
+    member:draw()
   end
 end
 
 function Game:keypressed(key)
-  for _, ally in ipairs(self.allies) do
-    ally:keypressed(key)
+  for _, member in ipairs(self.teamBlue) do
+    member:keypressed(key)
   end
-  for _, enemy in ipairs(self.enemies) do
-    enemy:keypressed(key)
+  for _, enemy in ipairs(self.teamRed) do
+    member:keypressed(key)
+  end
+end
+
+function Game:destroyDeadTablets()
+  deadTablets = {}
+  a = 1
+  for _, member in ipairs(self.teamBlue) do
+    if member.isDead then
+      table.insert(deadTablets, a)
+    end
+    a = a + 1
+  end
+  deadRemoved = 0
+  for _, i in ipairs(deadTablets) do
+    table.remove(self.teamBlue, i-deadRemoved)
+    deadRemoved = deadRemoved + 1
+  end
+  deadTablets = {}
+  a = 1
+  for _, member in ipairs(self.teamRed) do
+    if member.isDead then
+      table.insert(deadTablets, a)
+    end
+    a = a+1
+  end
+  deadRemoved = 0
+  for _, i in ipairs(deadTablets) do
+    table.remove(self.teamRed, i-deadRemoved)
+    deadRemoved = deadRemoved + 1
   end
 end
 

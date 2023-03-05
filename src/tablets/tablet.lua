@@ -5,37 +5,34 @@ healthBarWidth = 50
 healthBarHeight = 6
 
 function Tablet:initialize(column, row, atk, atkspd, maxhp, color)
-  self.range = 7
+  --Draw attribute
   self.row, self.column = row, column
+  self.color = color
   self.gap = spacing + cellSize
   self.x, self.y = fieldOffset[1] + self.gap*column + cellSize/2, fieldOffset[2] + self.gap*row + cellSize*4/7
   self.offset = cellSize/2
+  --Tablet strength attribute
   self.atk = atk or 1
   self.atkspd = atkspd or 1
-  self.maxhp = maxhp
-  self.hp = maxhp
-  self.color = color
-  self.skillCD = 20
+  self.maxhp, self.hp = maxhp or 100, maxhp or 100
+  self.skillCD, self.range = 10, 7.0
   self.type = 'archer'
-  self.bullets = {}
-  self.targetedEnemies = {}
-
+  self.bullets, self.targetedEnemies = {}, {}
+  --Boolean variables
   self.isDead = false
-  self.norAtkWait = false
-  self.skillWait = false
-  
+  self.norAtkWait, self.skillWait = false, false
+  --Timer
   self.timer = Timer.new()
 end
 
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
-  print(name)
 end
 
 function Tablet:update(dt)
   self.timer:update(dt)
-  if self.hp == 0 then
+  if self.hp <= 0 then
     self.isDead = true
   end
   if not self.isDead then
@@ -62,18 +59,7 @@ function Tablet:draw()
   end
 
   --Draw bullets (if ranged)
-  a = 1
-  arrivedBullets ={}
-  for _, bullet in ipairs(self.bullets) do
-    bullet:draw(self.color)
-    if bullet:arrive() then
-      table.insert(arrivedBullets, a)
-    end
-    a = a+1
-  end
-  for _,i in ipairs(arrivedBullets) do
-    table.remove(self.bullets, a)
-  end
+  self:drawBullets()
 end
 
 function Tablet:keypressed(key)
@@ -92,19 +78,23 @@ end
 
 function Tablet:normalAttack(waiting_time)
   self.norAtkWait = true
-  self.targetedEnemies = {}
-  for _, enemy in ipairs(self.enemies) do
-    if (self:distanceAway(enemy.column, enemy.row) < self.range*self.range) then
-      table.insert(self.targetedEnemies, enemy)
+  self.hitableEnemies = self:objectsWithinRange(self.range,self.enemies)
+  
+  self.closestRange = self.range
+  for _, enemy in ipairs(self.hitableEnemies) do
+    local a = self:distanceAway(enemy.column, enemy.row) 
+    if (a < self.closestRange) then
+      self.closestRange = a
     end
   end
-  for _, enemy in ipairs(self.targetedEnemies) do
-    table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
-    self.timer:after(0.7, function() enemy:receiveDamage(self.atk) end)
-
+  for _, enemy in ipairs(self.hitableEnemies) do
+    if (self:distanceAway(enemy.column, enemy.row) == self.closestRange) then
+      table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
+      self.timer:after(0.7, function() enemy:receiveDamage(self.atk) end)
+      break
+    end
   end
   waiting_time = 1/self.atkspd
-  print(waiting_time)
   self.timer:after(waiting_time, function() self:resetNorAtkWait() end)
 end
 
@@ -131,7 +121,6 @@ end
 
 function Tablet:resetNorAtkWait()
   self.norAtkWait = false
-  print("reset normal attack")
 end
 
 function Tablet:drawHealthBar()
@@ -162,7 +151,33 @@ end
 function Tablet:distanceAway(target_column, target_row)
   local x = self.column - target_column
   local y = self.row - target_row
-  return x*x + y*y
+  return math.sqrt(x^2 + y^2)
+end
+
+function Tablet:objectsWithinRange(range,objects)
+  selectedObjects = {}
+  for _,object in ipairs(objects) do
+    if (self:distanceAway(object.column, object.row) < range) then
+      table.insert(selectedObjects, object)
+    end
+  end
+  return selectedObjects
+end
+
+function Tablet:drawBullets()
+  a = 1
+  arrivedBullets ={}
+  for _, bullet in ipairs(self.bullets) do
+    bullet:draw(self.color)
+    if bullet.isArrived then
+      table.insert(arrivedBullets, a)
+    end
+    a = a+1
+  end
+  arrivedBulletsRemoved = 0
+  for _,i in ipairs(arrivedBullets) do
+    table.remove(self.bullets, i - arrivedBulletsRemoved)
+  end
 end
 
 return Tablet
