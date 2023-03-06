@@ -21,17 +21,15 @@ end
 
 function HUD:draw()
   ---UI for health, money, and slots
--- function Game:load()
---   heart = love.graphics.newImage('assets/heart.png')
--- end
+
   love.graphics.draw(Sprites.heart, 40, 750, 0, 0.1, 0.1)
   love.graphics.draw(Sprites.coin, 240, 750, 0, 2, 2)
 
   --Theme color: kaki
   -- love.graphics.setColor(love.math.colorFromBytes({219,161,89}))
 
-  -- love.graphics.rectangle('line', 10, 750, 580, 20)
-  -- love.graphics.line(290, 750, 290, 770)
+  love.graphics.rectangle('line', 10, 750, 580, 20)
+  love.graphics.line(290, 750, 290, 770)
 
 --slots for tablets
   -- love.graphics.rectangle('line', 0, 600, 600, 80)

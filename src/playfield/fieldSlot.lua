@@ -9,6 +9,7 @@ end
 function FieldSlot:draw()
   love.graphics.setColor(1, 1, 1)
   love.graphics.draw(Sprites.fieldSlot, self.x, self.y, 0, 2, 2)
+  
 end
 
 return FieldSlot

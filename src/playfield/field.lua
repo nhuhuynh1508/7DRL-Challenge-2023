@@ -21,11 +21,11 @@ end
 function Field:draw()
   
   --draw the battlefield
-  love.graphics.rectangle("fill",0,0,400,600)
-
-  for i=0,4 do
+  love.graphics.rectangle("fill", 0, 0, 400, 600)
+  
+  for i = 0,4 do
     for j = 0,5 do
-      love.graphics.setColor(love.math.colorFromBytes(239,171,109,70))
+      love.graphics.setColor(love.math.colorFromBytes(239, 171, 109, 70))
       love.graphics.rectangle("fill", fieldOffset[1] + i*(cellSize + spacing), fieldOffset[2] + j*(cellSize + spacing), cellSize, cellSize)
 
       if (isFighting == false) and (j>2) then
@@ -38,7 +38,7 @@ function Field:draw()
   end
 
   -- set back to default
-  love.graphics.setColor(love.math.colorFromBytes(219,161,89))
+  love.graphics.setColor(love.math.colorFromBytes(219, 161, 89))
 
   -- self.fieldSlots:draw()
 end

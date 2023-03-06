@@ -1,5 +1,6 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
+local Benchslot = require 'src.hud.benchSlot'
 
 local Game = {}
 
@@ -19,9 +20,10 @@ function Game:enter()
 end
 
 function Game:setup()
-  battlefield = Field()
+--setup playfield
+  playfield = Field()
   blue = {0,0,255}
-  red ={255,0,0}
+  red = {255,0,0}
   table.insert(self.teamBlue, Tablet(0, 0, 10, 0.7, 100, blue))
   table.insert(self.teamBlue, Tablet(1, 1, 10, 0.2, 200, blue))
   table.insert(self.teamBlue, Tablet(2, 2, 20, 0.7, 300, blue))
@@ -34,6 +36,14 @@ function Game:setup()
   for _, member in ipairs(self.teamRed) do
     member:setup(self.teamRed,self.teamBlue)
   end
+
+--setup benchslot
+  self.benchslots = {}
+  table.insert(self.benchslots, Benchslot(10, 650))
+  table.insert(self.benchslots, Benchslot(90, 650))
+  table.insert(self.benchslots, Benchslot(175, 650))
+  table.insert(self.benchslots, Benchslot(260, 650))
+  table.insert(self.benchslots, Benchslot(340, 650))
 end
 
 function Game:update(dt)
@@ -51,20 +61,17 @@ end
 
 function Game:draw()
   --Theme color: kaki
-  love.graphics.setColor(love.math.colorFromBytes(theme_color))
+  --benchslot
+  love.graphics.setColor(love.math.colorFromBytes(239, 171, 109, 70))
+  love.graphics.line(400, 0, 400, 800)
+  for _,benchslot in ipairs(self.benchslots) do
+    benchslot:draw()
+  end
 
-  love.graphics.rectangle('line', 10, 750, 580, 20)
-  love.graphics.line(290, 750, 290, 770)
+  --draw playfield
+  playfield:draw()
 
---slots for tablets
-  love.graphics.rectangle('line', 0, 600, 600, 80)
-  love.graphics.line(120, 600, 120, 680)
-  love.graphics.line(240, 600, 240, 680)
-  love.graphics.line(360, 600, 360, 680)
-  love.graphics.line(480, 600, 480, 680)
-
-  --battlefield
-  battlefield:draw()
+  --draw UI for health and money
 
   ---draw tablets
   for _, member in ipairs(self.teamBlue) do
