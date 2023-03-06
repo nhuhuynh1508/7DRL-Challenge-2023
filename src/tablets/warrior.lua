@@ -4,10 +4,10 @@ local Warrior = Class('Tablet', Tablet)
 function Warrior:initialize(column, row, level, color)
   Tablet.initialize(self,column, row, level, color)
   
-  self.atkByLevel= {10,15,30}
+  self.atkByLevel= {10,13,17}
   self.atkspdByLevel = {0.7,0.8,1}
-  self.maxhpByLevel = {120,250,700}
-  self.skillCDByLevel = {7,6,5}
+  self.maxhpByLevel = {120,200,300}
+  self.skillCDByLevel = {7,6,6}
   self.atk = self.atkByLevel[self.level]
   self.atkspd = self.atkspdByLevel[self.level]
   self.maxhp = self.maxhpByLevel[self.level]

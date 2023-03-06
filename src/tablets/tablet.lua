@@ -9,7 +9,7 @@ function Tablet:initialize(column, row, level, color)
   self.row, self.column = row, column
   self.color = color
   self.gap = spacing + cellSize
-  self.x, self.y = fieldOffset[1] + self.gap*column + cellSize/2, fieldOffset[2] + self.gap*row + cellSize*4/7
+  self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
   self.offset = cellSize/2
   self.bullets, self.targetedEnemies = {}, {}
 
@@ -45,7 +45,7 @@ function Tablet:update(dt)
   if not self.isDead then
     if not self.norAtkWait then
       self.norAtkWait = true
-      self:normalAttack()
+      self:normalAttack(self.atk)
     end
     if not self.skillWait then
       self.skillWait = true
@@ -83,7 +83,7 @@ function Tablet:keypressed(key)
   end
 end
 
-function Tablet:normalAttack(waiting_time)
+function Tablet:normalAttack(damage)
   self.norAtkWait = true
   self.hitableEnemies = self:objectsWithinRange(self.range,self.enemies)
   
@@ -97,7 +97,7 @@ function Tablet:normalAttack(waiting_time)
   for _, enemy in ipairs(self.hitableEnemies) do
     if (self:distanceAway(enemy.column, enemy.row) == self.closestRange) then
       table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
-      self.timer:after(0.7, function() enemy:receiveDamage(self.atk) end)
+      self.timer:after(0.7, function() enemy:receiveDamage(damage) end)
       break
     end
   end
@@ -187,6 +187,12 @@ function Tablet:drawBullets()
   for _,i in ipairs(arrivedBullets) do
     table.remove(self.bullets, i - arrivedBulletsRemoved)
   end
+end
+
+function Tablet:reposition(column, row)
+  self.column, self.row = column, row
+  self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
+  print('Reposition')
 end
 
 return Tablet

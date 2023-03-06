@@ -4,23 +4,20 @@ local Knight = Class('Tablet', Tablet)
 function Knight:initialize(column, row, level, color)
   Tablet.initialize(self,column, row, level, color)
   
-  self.atkByLevel= {10,15,30}
-  self.atkspdByLevel = {0.7,0.8,1}
-  self.maxhpByLevel = {120,250,700}
-  self.skillCDByLevel = {7,6,6}
+  self.atkByLevel= {15,20,25}
+  self.atkspdByLevel = {0.5, 0.6, 0.7}
+  self.maxhpByLevel = {150,250,370}
+  self.skillCDByLevel = {7,7,7}
   self.atk = self.atkByLevel[self.level]
   self.atkspd = self.atkspdByLevel[self.level]
   self.maxhp = self.maxhpByLevel[self.level]
   self.skillCD = self.skillCDByLevel[self.level]
   self.hp = self.maxhp
   self.range = 7.0
-  self.type = 'Knight'
+  self.type = 'knight'
 end
 
 function Knight:skillUse()
-  self.skillWait = true
-  self:healHP(self.maxhp*0.07)
-  self.timer:after(self.skillCD, function() self:resetSkillWait() end)
 end
 
 return Knight
