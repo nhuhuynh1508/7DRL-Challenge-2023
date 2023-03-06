@@ -10,14 +10,12 @@ function Bullet:initialize(ori_x, ori_y, des_x, des_y)
 end
 
 function Bullet:draw(color)
-  -- if not self.isArrived then
-    self.x = self.x + (self.des_x-self.ori_x)*self.speed
-    self.y = self.y + (self.des_y-self.ori_y)*self.speed
-    love.graphics.setColor(love.math.colorFromBytes(color))
-    love.graphics.circle('fill',self.x,self.y,3)
-    love.graphics.setColor(1,1,1)
-    self:checkArrived()
-  -- end
+  self.x = self.x + (self.des_x-self.ori_x)*self.speed
+  self.y = self.y + (self.des_y-self.ori_y)*self.speed
+  love.graphics.setColor(love.math.colorFromBytes(color))
+  love.graphics.circle('fill',self.x,self.y,3)
+  love.graphics.setColor(1,1,1)
+  self:checkArrived()
 end
 
 function Bullet:checkArrived()

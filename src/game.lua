@@ -1,5 +1,6 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
+local Warrior = require 'src.tablets.warrior'
 
 local Game = {}
 
@@ -11,6 +12,7 @@ function Game:enter()
     cellSize = 60
     spacing = 10
     fieldOffset = {(400 - 5*cellSize - 4*spacing)/2, (600 - 6*cellSize - 5*spacing)/2}
+  
   --Self variable
   self.teamBlue = {}
   self.teamRed = {}
@@ -19,14 +21,15 @@ function Game:enter()
 end
 
 function Game:setup()
-  battlefield = Field()
+  field = Field()
   blue = {0,0,255}
   red ={255,0,0}
-  table.insert(self.teamBlue, Tablet(0, 0, 10, 0.7, 100, blue))
-  table.insert(self.teamBlue, Tablet(1, 1, 10, 0.2, 200, blue))
-  table.insert(self.teamBlue, Tablet(2, 2, 20, 0.7, 300, blue))
-  table.insert(self.teamRed, Tablet(2, 5, 20, 1.5, 200, red))
-  table.insert(self.teamRed, Tablet(4, 5, 10, 1.7, 200, red))
+  table.insert(self.teamBlue, Tablet(0, 0, 1, blue))
+  table.insert(self.teamBlue, Tablet(1, 1, 1, blue))
+  table.insert(self.teamBlue, Tablet(2, 2, 1, blue))
+  table.insert(self.teamRed, Tablet(2, 5, 1, red))
+  table.insert(self.teamRed, Tablet(4, 5, 1, red))
+  table.insert(self.teamRed, Warrior(0, 5, 1, red))
 
   for _, member in ipairs(self.teamBlue) do
     member:setup(self.teamBlue,self.teamRed)
@@ -64,7 +67,7 @@ function Game:draw()
   love.graphics.line(480, 600, 480, 680)
 
   --battlefield
-  battlefield:draw()
+  field:draw()
 
   ---draw tablets
   for _, member in ipairs(self.teamBlue) do

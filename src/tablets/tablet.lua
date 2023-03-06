@@ -4,30 +4,37 @@ local Tablet = Class('Tablet')
 healthBarWidth = 50
 healthBarHeight = 6
 
-function Tablet:initialize(column, row, atk, atkspd, maxhp, color)
+function Tablet:initialize(column, row, level, color)
   --Draw attribute
   self.row, self.column = row, column
   self.color = color
   self.gap = spacing + cellSize
   self.x, self.y = fieldOffset[1] + self.gap*column + cellSize/2, fieldOffset[2] + self.gap*row + cellSize*4/7
   self.offset = cellSize/2
-  --Tablet strength attribute
-  self.atk = atk or 1
-  self.atkspd = atkspd or 1
-  self.maxhp, self.hp = maxhp or 100, maxhp or 100
-  self.skillCD, self.range = 10, 7.0
-  self.type = 'archer'
   self.bullets, self.targetedEnemies = {}, {}
-  --Boolean variables
-  self.isDead = false
-  self.norAtkWait, self.skillWait = false, false
-  --Timer
-  self.timer = Timer.new()
+
+  --Tablet strength attribute
+  self.level = level
+  self.atkByLevel= {10,15,30}
+  self.atkspdByLevel = {0.7,0.8,1}
+  self.maxhpByLevel = {100,150,300}
+  self.skillCDByLevel = {10,9,8}
+  self.atk = self.atkByLevel[self.level]
+  self.atkspd = self.atkspdByLevel[self.level]
+  self.maxhp = self.maxhpByLevel[self.level]
+  self.skillCD = self.skillCDByLevel[self.level]
+  self.hp = self.maxhp
+  self.range = 7.0
+  self.type = 'default'
 end
 
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
+  self.timer = Timer.new()
+
+  self.isDead = false
+  self.norAtkWait, self.skillWait = false, false
 end
 
 function Tablet:update(dt)
@@ -49,7 +56,7 @@ end
 
 function Tablet:draw()
   if not self.isDead then
-    --Draw health bar for tablets
+    --Draw health bar & name for tablets
     self:drawHealthBar()
 
     --Temporary asset : circle
@@ -126,6 +133,8 @@ end
 function Tablet:drawHealthBar()
   local healthBarHeight = healthBarHeight
   local healthBarWidth = healthBarWidth
+  love.graphics.setColor(0,0,0)
+  love.graphics.print(self.type, self.x-healthBarWidth/2, self.y-42, 0, 1, 1)
   if (self.maxhp > 500) then
     healthBarWidth = 1.5*healthBarWidth
   end
