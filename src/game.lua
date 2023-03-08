@@ -1,6 +1,7 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
 local Benchslot = require 'src.hud.benchSlot'
+local Map = require 'src.map'
 
 local Game = {}
 
@@ -16,11 +17,13 @@ function Game:enter()
   self.teamBlue = {}
   self.teamRed = {}
 
+  self.map = Map(20)
+
   self:setup()
 end
 
 function Game:setup()
---setup playfield
+  --setup playfield
   playfield = Field()
   blue = {0,0,255}
   red = {255,0,0}
@@ -37,7 +40,7 @@ function Game:setup()
     member:setup(self.teamRed,self.teamBlue)
   end
 
---setup benchslot
+  --setup benchslot
   self.benchslots = {}
   table.insert(self.benchslots, Benchslot(10, 650))
   table.insert(self.benchslots, Benchslot(90, 650))
@@ -57,6 +60,8 @@ function Game:update(dt)
   for _, member in ipairs(self.teamRed) do
     member:update(dt)
   end
+
+  self.map:update(dts)
 end
 
 function Game:draw()
@@ -80,6 +85,8 @@ function Game:draw()
   for _, member in ipairs(self.teamRed) do
     member:draw()
   end
+
+  self.map:draw()
 end
 
 function Game:keypressed(key)
