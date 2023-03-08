@@ -1,3 +1,5 @@
+local Room = require 'src.map.room'
+
 local Map = Class('Map')
 
 local shopsPerMap = 3
@@ -11,13 +13,6 @@ local baseHealthChance = 0.06
 local growthHealthChance = 0.006
 local maxRoomsWithoutHealth = 15
 
-local colors = {
-  enemy = {0.8, 0.8, 0.8},
-  shop = {0.4, 0.55, 1},
-  coin = {0.84, 0.84, 0.5},
-  health = {0.9, 0.55, 0.55},
-}
-
 function Map:initialize(floors)
   self.map = {}
   self.floorIndex = 1
@@ -30,22 +25,23 @@ function Map:initialize(floors)
 
   for f = 1, floors or 20 do
     self.map[f] = {}
+
+    local y = 800 - 45 * f
+
     for i = 1, 3 do
+      local x = 400 + 45 * i
+
       local n = math.random()
       
       if roomsWithoutCoin >= maxRoomsWithoutCoin then
-        self.map[f][i] = {
-          type = 'coin',
-        }
+        self.map[f][i] = Room(x, y, 'coin')
         coinChance = baseCoinChance
         roomsWithoutCoin = 0
         healthChance = healthChance + growthHealthChance
         roomsWithoutHealth = roomsWithoutHealth + 1
       
       elseif roomsWithoutHealth >= maxRoomsWithoutHealth then
-        self.map[f][i] = {
-          type = 'health',
-        }
+        self.map[f][i] = Room(x, y, 'health')
         coinChance = coinChance + growthCoinChance
         roomsWithoutCoin = roomsWithoutCoin + 1
         healthChance = baseHealthChance
@@ -53,27 +49,21 @@ function Map:initialize(floors)
 
       else
         if n < coinChance then
-          self.map[f][i] = {
-            type = 'coin',
-          }
+          self.map[f][i] = Room(x, y, 'coin')
           coinChance = baseCoinChance
           roomsWithoutCoin = 0
           healthChance = healthChance + growthHealthChance
           roomsWithoutHealth = roomsWithoutHealth + 1
 
         elseif n < coinChance + healthChance then
-          self.map[f][i] = {
-            type = 'health',
-          }
+          self.map[f][i] = Room(x, y, 'health')
           coinChance = coinChance + growthCoinChance
           roomsWithoutCoin = roomsWithoutCoin + 1
           healthChance = baseHealthChance
           roomsWithoutHealth = 0
 
         else
-          self.map[f][i] = {
-            type = 'enemy',
-          }
+          self.map[f][i] = Room(x, y, 'enemy')
           coinChance = coinChance + growthCoinChance
           roomsWithoutCoin = roomsWithoutCoin + 1
           healthChance = healthChance + growthHealthChance
@@ -92,9 +82,9 @@ function Map:initialize(floors)
     elseif floorIndex > floors then floorIndex = floors
     end
 
-    self.map[floorIndex][math.random(1, 3)] = {
-      type = 'shop'
-    }
+    local rIndex = math.random(1, 3)
+    local oldRoom = self.map[floorIndex][rIndex]
+    self.map[floorIndex][rIndex] = Room(oldRoom.x, oldRoom.y, 'shop')
   end
 end
 
@@ -104,13 +94,24 @@ end
 
 function Map:draw()
   for floor = 1, #self.map do
-    local y = 800 - 45 * floor
     for i = 1, 3 do
-      local x = 400 + 45 * i
-      love.graphics.setColor(colors[self.map[floor][i].type])
-      
-      love.graphics.rectangle('fill', x, y, 25, 25)
-      
+      self.map[floor][i]:draw(x, y)
+    end
+  end
+end
+
+function Map:mousepressed(x, y)
+  for floor = 1, #self.map do
+    for i = 1, 3 do
+      self.map[floor][i]:mousepressed(x, y)
+    end
+  end
+end
+
+function Map:mousemoved(x, y)
+  for floor = 1, #self.map do
+    for i = 1, 3 do
+      self.map[floor][i]:mousemoved(x, y)
     end
   end
 end
