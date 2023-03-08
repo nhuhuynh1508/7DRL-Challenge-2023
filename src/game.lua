@@ -24,11 +24,11 @@ function Game:setup()
   playfield = Field()
   blue = {0,0,255}
   red = {255,0,0}
-  table.insert(self.teamBlue, Tablet(0, 0, 10, 0.7, 100, blue))
-  table.insert(self.teamBlue, Tablet(1, 1, 10, 0.2, 200, blue))
-  table.insert(self.teamBlue, Tablet(2, 2, 20, 0.7, 300, blue))
-  table.insert(self.teamRed, Tablet(2, 5, 20, 1.5, 200, red))
-  table.insert(self.teamRed, Tablet(4, 5, 10, 1.7, 200, red))
+  table.insert(self.teamBlue, Tablet(0, 0, 1, blue))
+  table.insert(self.teamBlue, Tablet(1, 1, 1, blue))
+  table.insert(self.teamBlue, Tablet(2, 2, 1, blue))
+  table.insert(self.teamRed, Tablet(2, 5, 1, red))
+  table.insert(self.teamRed, Tablet(4, 5, 1, red))
 
   for _, member in ipairs(self.teamBlue) do
     member:setup(self.teamBlue,self.teamRed)
@@ -86,7 +86,7 @@ function Game:keypressed(key)
   for _, member in ipairs(self.teamBlue) do
     member:keypressed(key)
   end
-  for _, enemy in ipairs(self.teamRed) do
+  for _, member in ipairs(self.teamRed) do
     member:keypressed(key)
   end
 end

@@ -20,4 +20,9 @@ end
 function Knight:skillUse()
 end
 
+function Knight:_draw()
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(Sprites.tablets.knight, self.x, self.y, 0, 1, 1)
+end
+
 return Knight

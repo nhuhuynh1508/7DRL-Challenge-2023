@@ -25,4 +25,9 @@ function Archer:skillUse()
   self.timer:after(self.skillCD, function() self:resetSkillWait() end)
 end
 
+function Rogue:_draw()
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(Sprites.tablets.archer, self.x, self.y, 0, 2, 2)
+end
+
 return Archer

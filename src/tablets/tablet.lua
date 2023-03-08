@@ -23,7 +23,7 @@ function Tablet:initialize(column, row, level, color)
   self.atkspd = self.atkspdByLevel[self.level]
   self.maxhp = self.maxhpByLevel[self.level]
   self.skillCD = self.skillCDByLevel[self.level]
-  self.hp = self.maxhp
+  self.hp = self.maxhp or 100
   self.range = 7.0
   self.type = 'default'
 end
@@ -60,13 +60,17 @@ function Tablet:draw()
     self:drawHealthBar()
 
     --Temporary asset : circle
-    love.graphics.circle('fill', self.x, self.y,15)
-
-    love.graphics.setColor(1,1,1)
+    self:_draw()
   end
 
   --Draw bullets (if ranged)
   self:drawBullets()
+end
+
+function Tablet:_draw()
+  love.graphics.setColor(0.8, 0.8, 0.8)
+  love.graphics.circle('fill', self.x, self.y, 15)
+  love.graphics.setColor(1, 1, 1)
 end
 
 function Tablet:keypressed(key)
