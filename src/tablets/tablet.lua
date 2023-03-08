@@ -32,9 +32,6 @@ end
 
 function Tablet:update(dt)
   self.timer:update(dt)
-  if self.hp <= 0 then
-    self.isDead = true
-  end
   if not self.isDead then
     if not self.norAtkWait then
       self.norAtkWait = true
@@ -108,7 +105,12 @@ function Tablet:skillUse()
 end
 
 function Tablet:receiveDamage(damage)
-  self.hp = math.max(self.hp - damage,0)
+  self.hp = math.max(self.hp - damage, 0)
+  if self.hp <= 0 then
+    self.isDead = true
+
+    Gamestate.current():onTabletDie(self)
+  end
 end
 
 function Tablet:healHP(heal)

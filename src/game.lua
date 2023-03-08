@@ -7,7 +7,9 @@ local Game = {}
 function Game:enter()
   --Global variable
   theme_color = {219,161,89}
+  isDead = false
   isFighting = false
+  done_once = false
     --Battlefield relating variable
     cellSize = 60
     spacing = 10
@@ -15,6 +17,8 @@ function Game:enter()
   --Self variable
   self.teamBlue = {}
   self.teamRed = {}
+  
+  self.maxhp, self.hp = maxhp or 100, maxhp or 100
 
   self:setup()
 end
@@ -27,7 +31,7 @@ function Game:setup()
   table.insert(self.teamBlue, Tablet(0, 0, 10, 0.7, 100, blue))
   table.insert(self.teamBlue, Tablet(1, 1, 10, 0.2, 200, blue))
   table.insert(self.teamBlue, Tablet(2, 2, 20, 0.7, 300, blue))
-  table.insert(self.teamRed, Tablet(2, 5, 20, 1.5, 200, red))
+  table.insert(self.teamBlue, Tablet(2, 5, 20, 1.5, 200, blue))
   table.insert(self.teamRed, Tablet(4, 5, 10, 1.7, 200, red))
 
   for _, member in ipairs(self.teamBlue) do
@@ -47,22 +51,23 @@ function Game:setup()
 end
 
 function Game:update(dt)
-  --Remove dead tablets
+  --remove dead tablets
   self:destroyDeadTablets()
 
-  --Update tablets
+  --update tablets
   for _, member in ipairs(self.teamBlue) do
     member:update(dt)
   end
   for _, member in ipairs(self.teamRed) do
     member:update(dt)
   end
+
+  --check player's health(teamRed)
 end
 
 function Game:draw()
   --Theme color: kaki
   --benchslot
-  love.graphics.setColor(love.math.colorFromBytes(239, 171, 109, 70))
   love.graphics.line(400, 0, 400, 800)
   for _,benchslot in ipairs(self.benchslots) do
     benchslot:draw()
@@ -71,7 +76,15 @@ function Game:draw()
   --draw playfield
   playfield:draw()
 
-  --draw UI for health and money
+  --draw UI for health & money
+  love.graphics.rectangle('line', 10, 740, 380, 30)
+  love.graphics.line(200, 740, 200, 770)
+  --draw heart
+  love.graphics.draw(Sprites.heart, 20, 745, 0, 0.1, 0.1)
+  --write health
+  love.graphics.print(self.hp, 50, 748, 0, 1, 1)
+  --draw coin
+  love.graphics.draw(Sprites.coin, 210, 745, 0, 1.5, 1.5)
 
   ---draw tablets
   for _, member in ipairs(self.teamBlue) do
@@ -117,6 +130,53 @@ function Game:destroyDeadTablets()
   for _, i in ipairs(deadTablets) do
     table.remove(self.teamRed, i-deadRemoved)
     deadRemoved = deadRemoved + 1
+  end
+end
+
+function Game:checkHealth()
+  if self.teamRed then
+    if self.maxhp <= 0 then
+      isDead = true
+        print('lmao')
+    end
+  end
+end
+
+function Game:receiveDamage(damage)
+  self.hp = math.max(self.hp - damage, 0)
+  print('hp: '..tostring(self.hp)..'/'..tostring(self.maxhp))
+end
+
+--team Red is the player, when the player lost the battle 
+--receive damage(minus HP)
+function Game:checkResult()
+  if #self.teamBlue == 0 then
+    return 'red'
+  elseif #self.teamRed == 0 then
+    return 'blue'
+  else
+  end
+
+  -- if #self.teamBlue == 0 then 
+  --   print("Team Blue has been defeated")
+  -- elseif #self.teamBlue ~= 0 then
+  --   print("Victory")
+  -- end
+  -- if #self.teamRed == 0 then
+  --   self.receiveDamage(5) 
+  --   print("Team Red has been defeated")
+  -- elseif #self.teamRed ~= 0 then
+  --   print("Defeat")
+  -- end
+end
+
+function Game:onTabletDie(tablet)
+  local winner = self:checkResult()
+  if winner == 'red' then
+    print('win')
+  elseif winner == 'blue' then
+    print('lost')
+    self:receiveDamage(5)
   end
 end
 
