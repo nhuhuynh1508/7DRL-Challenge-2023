@@ -4,30 +4,37 @@ local Tablet = Class('Tablet')
 healthBarWidth = 50
 healthBarHeight = 6
 
-function Tablet:initialize(column, row, atk, atkspd, maxhp, color)
+function Tablet:initialize(column, row, level, color)
   --Draw attribute
   self.row, self.column = row, column
   self.color = color
   self.gap = spacing + cellSize
-  self.x, self.y = fieldOffset[1] + self.gap*column + cellSize/2, fieldOffset[2] + self.gap*row + cellSize*4/7
+  self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
   self.offset = cellSize/2
-  --Tablet strength attribute
-  self.atk = atk or 1
-  self.atkspd = atkspd or 1
-  self.maxhp, self.hp = maxhp or 100, maxhp or 100
-  self.skillCD, self.range = 10, 7.0
-  self.type = 'archer'
   self.bullets, self.targetedEnemies = {}, {}
-  --Boolean variables
-  self.isDead = false
-  self.norAtkWait, self.skillWait = false, false
-  --Timer
-  self.timer = Timer.new()
+
+  --Tablet strength attribute
+  self.level = level
+  self.atkByLevel= {10,15,30}
+  self.atkspdByLevel = {0.7,0.8,1}
+  self.maxhpByLevel = {100,150,300}
+  self.skillCDByLevel = {10,9,8}
+  self.atk = self.atkByLevel[self.level]
+  self.atkspd = self.atkspdByLevel[self.level]
+  self.maxhp = self.maxhpByLevel[self.level]
+  self.skillCD = self.skillCDByLevel[self.level]
+  self.hp = self.maxhp or 100
+  self.range = 7.0
+  self.type = 'default'
 end
 
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
+  self.timer = Timer.new()
+
+  self.isDead = false
+  self.norAtkWait, self.skillWait = false, false
 end
 
 function Tablet:update(dt)
@@ -35,7 +42,7 @@ function Tablet:update(dt)
   if not self.isDead then
     if not self.norAtkWait then
       self.norAtkWait = true
-      self:normalAttack()
+      self:normalAttack(self.atk)
     end
     if not self.skillWait then
       self.skillWait = true
@@ -46,17 +53,21 @@ end
 
 function Tablet:draw()
   if not self.isDead then
-    --Draw health bar for tablets
+    --Draw health bar & name for tablets
     self:drawHealthBar()
 
     --Temporary asset : circle
-    love.graphics.circle('fill', self.x, self.y,15)
-
-    love.graphics.setColor(1,1,1)
+    self:_draw()
   end
 
   --Draw bullets (if ranged)
   self:drawBullets()
+end
+
+function Tablet:_draw()
+  love.graphics.setColor(0.8, 0.8, 0.8)
+  love.graphics.circle('fill', self.x, self.y, 15)
+  love.graphics.setColor(1, 1, 1)
 end
 
 function Tablet:keypressed(key)
@@ -73,7 +84,7 @@ function Tablet:keypressed(key)
   end
 end
 
-function Tablet:normalAttack(waiting_time)
+function Tablet:normalAttack(damage)
   self.norAtkWait = true
   self.hitableEnemies = self:objectsWithinRange(self.range,self.enemies)
   
@@ -87,7 +98,7 @@ function Tablet:normalAttack(waiting_time)
   for _, enemy in ipairs(self.hitableEnemies) do
     if (self:distanceAway(enemy.column, enemy.row) == self.closestRange) then
       table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
-      self.timer:after(0.7, function() enemy:receiveDamage(self.atk) end)
+      self.timer:after(0.7, function() enemy:receiveDamage(damage) end)
       break
     end
   end
@@ -128,6 +139,8 @@ end
 function Tablet:drawHealthBar()
   local healthBarHeight = healthBarHeight
   local healthBarWidth = healthBarWidth
+  love.graphics.setColor(0,0,0)
+  love.graphics.print(self.type, self.x-healthBarWidth/2, self.y-42, 0, 1, 1)
   if (self.maxhp > 500) then
     healthBarWidth = 1.5*healthBarWidth
   end
@@ -180,6 +193,12 @@ function Tablet:drawBullets()
   for _,i in ipairs(arrivedBullets) do
     table.remove(self.bullets, i - arrivedBulletsRemoved)
   end
+end
+
+function Tablet:reposition(column, row)
+  self.column, self.row = column, row
+  self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
+  print('Reposition')
 end
 
 return Tablet

@@ -1,0 +1,81 @@
+1st-tier tablet
+	Warrior: 
+		HP: {120,200,300}
+		ATK: {10,13,17}
+		ATKSPD: {0.7,0.8,1}
+		CD: {7,6,6}
+		Skill: heal itself 7% MaxHP
+	Knight:
+		HP: {150,250,370}
+		ATK: {15,20,25}
+		ATKSPD: {0.7, 0.8, 1}
+		CD: {0,0,0}
+		Skill: no skill
+	Archer:
+		HP: {50,70,120}
+		ATK: {17,22,26}
+		ATKSPD: {0.8, 0.8, 1}
+		CD: {7,7,6}
+		Skill: shoot (1+ Level) consecutive shots (45% damage)
+	Mage:
+		HP: {50,70,120}
+		ATK: {10,12,15}
+		ATKSPD: {0.5, 0.5, 0.6}
+		CD: {4,3,3}
+		Skill: stun 1 random enemies on the field for (1 second) 
+	Rogue: at the beginning, move to the enemy backline, first attack (double the damage)
+		HP: {60,75,140}
+		ATK: {15,20,25}
+		ATKSPD: {0.9, 0.95, 1.1}
+		CD: {0,0,0}
+		Skill: no skill
+2nd-tier tablet
+	Berserker: splash damage around 1 space of the target (40% damage)
+		HP: {140,240,330}
+		ATK: {20,23,27}
+		ATKSPD: {0.8,0.8,0.9}
+		CD: {0,0,0}
+		Skill: no skill
+	Templar:
+		HP: {180,290,405}
+		ATK: {12,16,20}
+		ATKSPD: {0.5, 0.6, 0.7}
+		CD: {15,14,13}
+		Skill: become immune in 2 seconds
+	Ranger: attack has 50% to be a double shot
+		HP: {40,60,110}
+		ATK: {10,11,14}
+		ATKSPD: {1, 1.3, 1.5}
+		CD: {15,14,10}
+		Skill: become frenzy (attack speed + 100%) for 2 second
+	Priest:
+		HP: {70,175,350}
+		ATK: {5,8,15}
+		ATKSPD: {0.5, 0.5, 0.6}
+		CD: {4,3.7,3.5}
+		Skill: heal all allies for (3% MaxHP) and (20% lost HP of that ally)
+	Vampire: each attack regenerate (3% MaxHP)
+		HP: {110,170,240}
+		ATK: {10,11.5,13.5}
+		ATKSPD: {1, 1.2, 1.5}
+		CD: {0,0,0}
+		Skill: no skill
+3rd-tier tablet
+	Assassin: every attack gain attack speed (of maximum 6APS)
+		HP: {150,300,450}
+		ATK: {10,12,19}
+		ATKSPD: {1,1,1}
+		CD: {0,0,0}
+		Skill: no skill
+	Colossus:
+		HP: {300,400,500}
+		ATK: {20,25,30}
+		ATKSPD: {0.5, 0.6, 0.7}
+		CD: {15,14,13}
+		Skill: become immune in 2 seconds
+	Wizard:
+		HP: {40,80,200}
+		ATK: {20,25,25}
+		ATKSPD: {1, 1.3, 1.5}
+		CD: {15,14,10}
+		Skill: attacks all target (200% of ATK)

@@ -1,6 +1,7 @@
 local Tablet = require 'src.tablets.tablet'
 local Field = require 'src.playfield.field'
 local Benchslot = require 'src.hud.benchSlot'
+local Map = require 'src.map'
 
 local Game = {}
 
@@ -17,6 +18,8 @@ function Game:enter()
   --Self variable
   self.teamBlue = {}
   self.teamRed = {}
+
+  self.map = Map(20)
   
   self.maxhp, self.hp = maxhp or 100, maxhp or 100
 
@@ -24,7 +27,7 @@ function Game:enter()
 end
 
 function Game:setup()
---setup playfield
+  --setup playfield
   playfield = Field()
   blue = {0,0,255}
   red = {255,0,0}
@@ -41,7 +44,7 @@ function Game:setup()
     member:setup(self.teamRed,self.teamBlue)
   end
 
---setup benchslot
+  --setup benchslot
   self.benchslots = {}
   table.insert(self.benchslots, Benchslot(10, 650))
   table.insert(self.benchslots, Benchslot(90, 650))
@@ -62,7 +65,7 @@ function Game:update(dt)
     member:update(dt)
   end
 
-  --check player's health(teamRed)
+  self.map:update(dts)
 end
 
 function Game:draw()
@@ -93,13 +96,15 @@ function Game:draw()
   for _, member in ipairs(self.teamRed) do
     member:draw()
   end
+
+  self.map:draw()
 end
 
 function Game:keypressed(key)
   for _, member in ipairs(self.teamBlue) do
     member:keypressed(key)
   end
-  for _, enemy in ipairs(self.teamRed) do
+  for _, member in ipairs(self.teamRed) do
     member:keypressed(key)
   end
 end
