@@ -65,7 +65,7 @@ function Game:update(dt)
     member:update(dt)
   end
 
-  self.map:update(dts)
+  self.map:update(dt)
 end
 
 function Game:draw()
