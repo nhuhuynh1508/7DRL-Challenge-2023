@@ -7,8 +7,12 @@ local colors = {
   health = {0.9, 0.55, 0.55},
 }
 
-function Room:initialize(x, y, type)
-  self.x, self.y = x, y
+local size = 25
+
+function Room:initialize(map, roomIndex, floor, type)
+  self.map = map
+  self.roomIndex, self.floor = roomIndex, floor
+  self.x, self.y = 400 + 45 * roomIndex, 760 - 45 * floor
   self.type = type
 end
 
@@ -18,11 +22,14 @@ end
 
 function Room:draw()
   love.graphics.setColor(colors[self.type])
-  love.graphics.rectangle('fill', self.x, self.y, 25, 25)
+  love.graphics.rectangle('fill', self.x, self.y, size, size)
 end
 
 function Room:mousepressed(x, y)
-  
+  if self.x < x and x < self.x + size and
+      self.y < y and y < self.y + size then
+    self.map:onRoomPressed(self)
+  end
 end
 
 function Room:mousemoved(x, y)

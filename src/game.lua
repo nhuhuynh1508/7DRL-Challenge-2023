@@ -19,7 +19,7 @@ function Game:enter()
   self.teamBlue = {}
   self.teamRed = {}
 
-  self.map = Map(20)
+  self.map = Map(12)
   
   self.maxhp, self.hp = maxhp or 100, maxhp or 100
 
