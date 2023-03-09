@@ -26,24 +26,46 @@ function Rogue:setup(allies, enemies)
   self.isDead = false
   self.norAtkWait, self.skillWait = false, false
   
-  local max = 0
-  for _,enemy in ipairs(self.enemies) do
-    local a = self:distanceAway(enemy.column, enemy.row)
-    if (a > max) then
-      max = a
-    end
-  end
-  for _,enemy in ipairs(self.enemies) do
-    print('Rogue set up')
-    if (self:distanceAway(enemy.column, enemy.row) == max) then
-      self:reposition(enemy.column, enemy.row)
-      break
-    end
-  end
+  -- local max = 0
+  -- for _,enemy in ipairs(self.enemies) do
+  --   local a = self:distanceAway(enemy.column, enemy.row)
+  --   if (a > max) then
+  --     max = a
+  --   end
+  -- end
+  -- for _,enemy in ipairs(self.enemies) do
+  --   print('Rogue set up')
+  --   if (self:distanceAway(enemy.column, enemy.row) == max) then
+  --     self:reposition(enemy.column, enemy.row)
+  --     break
+  --   end
+  -- end
 end
 
 function Rogue:skillUse()
   --empty on purpose
+end
+
+function Rogue:normalAttack(damage)
+  self.norAtkWait = true
+  self.hitableEnemies = self:objectsWithinRange(self.range,self.enemies)
+  
+  self.closestRange = 0
+  for _, enemy in ipairs(self.hitableEnemies) do
+    local a = self:distanceAway(enemy.column, enemy.row) 
+    if (a > self.closestRange) then
+      self.closestRange = a
+    end
+  end
+  for _, enemy in ipairs(self.hitableEnemies) do
+    if (self:distanceAway(enemy.column, enemy.row) == self.closestRange) then
+      table.insert(self.bullets, Bullet(self.x,self.y,enemy.x,enemy.y))
+      self.timer:after(0.7, function() enemy:receiveDamage(damage) end)
+      break
+    end
+  end
+  waiting_time = 1/self.atkspd
+  self.timer:after(waiting_time, function() self:resetNorAtkWait() end)
 end
 
 function Rogue:_draw()

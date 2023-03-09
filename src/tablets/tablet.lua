@@ -33,20 +33,22 @@ function Tablet:setup(allies, enemies)
   self.enemies = enemies
   self.timer = Timer.new()
 
-  self.isDead = false
+  self.isDead, self.isStunned = false
   self.norAtkWait, self.skillWait = false, false
 end
 
 function Tablet:update(dt)
   self.timer:update(dt)
   if not self.isDead then
-    if not self.norAtkWait then
-      self.norAtkWait = true
-      self:normalAttack(self.atk)
-    end
-    if not self.skillWait then
-      self.skillWait = true
-      self:skillUse()
+    if not self.isStunned then
+      if not self.norAtkWait then
+        self.norAtkWait = true
+        self:normalAttack(self.atk)
+      end
+      if not self.skillWait then
+        self.skillWait = true
+        self:skillUse()
+      end
     end
   end
 end
@@ -199,6 +201,11 @@ function Tablet:reposition(column, row)
   self.column, self.row = column, row
   self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
   print('Reposition')
+end
+
+function Tablet:stunned(time)
+  self.isStunned = true
+  self.timer:after(time, function() self.isStunned = false end)
 end
 
 return Tablet

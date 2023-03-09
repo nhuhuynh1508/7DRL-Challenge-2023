@@ -4,8 +4,8 @@ local Archer = Class('Tablet', Tablet)
 function Archer:initialize(column, row, level, color)
   Tablet.initialize(self,column, row, level, color)
   
-  self.atkByLevel= {17,22,26}
-  self.atkspdByLevel = {0.8, 0.8, 1}
+  self.atkByLevel= {13,18,26}
+  self.atkspdByLevel = {0.8, 0.92, 1}
   self.maxhpByLevel = {50,70,120}
   self.skillCDByLevel = {7,7,6}
   self.atk = self.atkByLevel[self.level]
@@ -19,13 +19,13 @@ end
 
 function Archer:skillUse()
   self.skillWait = true
-  for i = 1, self.level do
-    self:normalAttack(self.atk*0.45)
+  for i = 1, (self.level+2) do
+    self:normalAttack(self.atk*0.35)
   end
   self.timer:after(self.skillCD, function() self:resetSkillWait() end)
 end
 
-function Rogue:_draw()
+function Archer:_draw()
   love.graphics.setColor(1, 1, 1)
   love.graphics.draw(Sprites.tablets.archer, self.x, self.y, 0, 2, 2)
 end

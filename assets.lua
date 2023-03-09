@@ -28,3 +28,9 @@ Sprites = {
     wizard = lg.newImage('assets/tablets/wizard.png'),
   },
 }
+
+Warrior = require 'src.tablets.warrior'
+Knight = require 'src.tablets.knight'
+Archer = require 'src.tablets.archer'
+Mage = require 'src.tablets.mage'
+Rogue = require 'src.tablets.rogue'

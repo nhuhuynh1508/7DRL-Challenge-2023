@@ -4,8 +4,8 @@ local Knight = Class('Tablet', Tablet)
 function Knight:initialize(column, row, level, color)
   Tablet.initialize(self,column, row, level, color)
   
-  self.atkByLevel= {15,20,25}
-  self.atkspdByLevel = {0.5, 0.6, 0.7}
+  self.atkByLevel= {12,14,18.5}
+  self.atkspdByLevel = {0.5, 0.65, 0.77}
   self.maxhpByLevel = {150,250,370}
   self.skillCDByLevel = {7,7,7}
   self.atk = self.atkByLevel[self.level]
