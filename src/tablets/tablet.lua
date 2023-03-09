@@ -9,7 +9,7 @@ function Tablet:initialize(column, row, level, color)
   self.row, self.column = row, column
   self.color = color
   self.gap = spacing + cellSize
-  self.x, self.y = fieldOffset[1] + self.gap*self.column + cellSize/2, fieldOffset[2] + self.gap*self.row + cellSize*4/7
+  self.x, self.y = fieldOffset[1] + self.gap*self.column + 13, fieldOffset[2] + self.gap*self.row + 13
   self.offset = cellSize/2
   self.bullets, self.targetedEnemies = {}, {}
 
@@ -26,6 +26,7 @@ function Tablet:initialize(column, row, level, color)
   self.hp = self.maxhp or 100
   self.range = 7.0
   self.type = 'default'
+  self.dmgReduced = 0
 end
 
 function Tablet:setup(allies, enemies)
@@ -61,7 +62,9 @@ function Tablet:draw()
     --Temporary asset : circle
     self:_draw()
   end
-
+  if self.isStunned then
+    love.graphics.print("?", self.x+13, self.y,0,2,2)
+  end
   --Draw bullets (if ranged)
   self:drawBullets()
 end
@@ -118,7 +121,7 @@ function Tablet:skillUse()
 end
 
 function Tablet:receiveDamage(damage)
-  self.hp = math.max(self.hp - damage, 0)
+  self.hp = math.max(self.hp - damage*(1-self.dmgReduced), 0)
   if self.hp <= 0 then
     self.isDead = true
 
@@ -142,7 +145,7 @@ function Tablet:drawHealthBar()
   local healthBarHeight = healthBarHeight
   local healthBarWidth = healthBarWidth
   love.graphics.setColor(0,0,0)
-  love.graphics.print(self.type, self.x-healthBarWidth/2, self.y-42, 0, 1, 1)
+  love.graphics.print(self.type, self.x-healthBarWidth/2+17, self.y-42+17, 0, 1, 1)
   if (self.maxhp > 500) then
     healthBarWidth = 1.5*healthBarWidth
   end
@@ -153,14 +156,14 @@ function Tablet:drawHealthBar()
   else
     love.graphics.setColor(love.math.colorFromBytes(255, 0, 0))
   end
-  love.graphics.rectangle('fill', self.x-healthBarWidth/2, self.y-30, healthBarWidth*self.hp/self.maxhp, healthBarHeight)
+  love.graphics.rectangle('fill', self.x-healthBarWidth/2 + 17, self.y - 30 + 19, healthBarWidth*self.hp/self.maxhp, healthBarHeight)
   love.graphics.setColor(love.math.colorFromBytes(self.color))
-  love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-30, healthBarWidth, healthBarHeight)
-  love.graphics.rectangle('line', self.x-healthBarWidth/2, self.y-30, healthBarWidth, healthBarHeight)
+  love.graphics.rectangle('line', self.x-healthBarWidth/2 + 17, self.y - 30 + 19, healthBarWidth, healthBarHeight)
+  love.graphics.rectangle('line', self.x-healthBarWidth/2 + 17, self.y - 30 + 19, healthBarWidth, healthBarHeight)
   segment = self.maxhp/100
   for i = 0, math.ceil(segment)-1 do
     if i < (math.ceil(segment)-1) then
-      love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment, self.y-30, healthBarWidth/segment, healthBarHeight)
+      love.graphics.rectangle('line', self.x-healthBarWidth/2+i*healthBarWidth/segment + 17, self.y-30 + 19, healthBarWidth/segment, healthBarHeight)
     end
   end
 end

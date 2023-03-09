@@ -31,11 +31,13 @@ function Game:setup()
   playfield = Field()
   blue = {0,0,255}
   red = {255,0,0}
-  table.insert(self.teamBlue, Tablet(0, 0, 1, blue))
-  table.insert(self.teamBlue, Tablet(1, 1, 1, blue))
-  table.insert(self.teamBlue, Tablet(2, 2, 1, blue))
-  table.insert(self.teamBlue, Tablet(2, 5, 1, blue))
-  table.insert(self.teamRed, Tablet(4, 5, 1, red))
+  -- table.insert(self.teamBlue, Priest(0, 0, 1, blue))
+  -- table.insert(self.teamBlue, Mage(1, 1, 1, blue))
+  table.insert(self.teamBlue, Vampire(2, 2, 3, blue))
+  table.insert(self.teamRed, Templar(2, 3, 1, red))
+  table.insert(self.teamRed, Ranger(2, 5, 1, red))
+  table.insert(self.teamRed, Knight(1, 3, 1, red))
+  -- table.insert(self.teamRed, Archer(4, 5, 1, red))
 
   for _, member in ipairs(self.teamBlue) do
     member:setup(self.teamBlue,self.teamRed)

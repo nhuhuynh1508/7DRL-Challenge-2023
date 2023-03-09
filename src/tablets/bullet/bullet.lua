@@ -2,8 +2,8 @@ local Bullet = Class("Bullet")
 
 function Bullet:initialize(ori_x, ori_y, des_x, des_y)
   self.speed = 0.02
-  self.ori_x, self.ori_y = ori_x, ori_y
-  self.des_x, self.des_y = des_x, des_y
+  self.ori_x, self.ori_y = ori_x + 20, ori_y + 20
+  self.des_x, self.des_y = des_x + 20, des_y + 20
   self.x = self.ori_x
   self.y = self.ori_y
   self.isArrived = false

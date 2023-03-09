@@ -19,12 +19,13 @@ end
 
 function Mage:_draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.tablets.mage, self.x, self.y, 0, 2, 2)
+  love.graphics.draw(Sprites.tablets.mage, self.x, self.y, 0, 1.5, 1.5)
 end
 
 function Mage:skillUse()
   self.skillWait = true
   self.enemies[love.math.random( #self.enemies)]:stunned(2)
+  self.timer:after(self.skillCD, function() self:resetSkillWait() end)
 end
 
 return Mage

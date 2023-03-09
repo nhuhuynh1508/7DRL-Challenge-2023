@@ -27,7 +27,7 @@ end
 
 function Archer:_draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.tablets.archer, self.x, self.y, 0, 2, 2)
+  love.graphics.draw(Sprites.tablets.archer, self.x, self.y, 0, 1.5, 1.5)
 end
 
 return Archer
