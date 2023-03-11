@@ -3,18 +3,25 @@ local Field = require 'src.playfield.field'
 local Benchslot = require 'src.hud.benchSlot'
 local Map = require 'src.map.map'
 
+
+-- Global variable
+theme_color = {219,161,89}
+isDead = false
+isFighting = false
+done_once = false
+
+-- Battlefield relating variable
+cellSize = 60
+spacing = 10
+fieldOffset = {(400 - 5*cellSize - 4*spacing)/2, (600 - 6*cellSize - 5*spacing)/2}
+
+blue = {0,0,255}
+red = {255,0,0}
+
+
 local Game = {}
 
 function Game:enter()
-  --Global variable
-  theme_color = {219,161,89}
-  isDead = false
-  isFighting = false
-  done_once = false
-    --Battlefield relating variable
-    cellSize = 60
-    spacing = 10
-    fieldOffset = {(400 - 5*cellSize - 4*spacing)/2, (600 - 6*cellSize - 5*spacing)/2}
   --Self variable
   self.teamBlue = {}
   self.teamRed = {}
@@ -27,16 +34,14 @@ function Game:enter()
 end
 
 function Game:setup()
-  --setup playfield
-  playfield = Field()
-  blue = {0,0,255}
-  red = {255,0,0}
+  self.playfield = Field()
+  
   -- table.insert(self.teamBlue, Priest(0, 0, 1, blue))
   -- table.insert(self.teamBlue, Mage(1, 1, 1, blue))
-  table.insert(self.teamBlue, Vampire(2, 2, 3, blue))
-  table.insert(self.teamRed, Templar(2, 3, 1, red))
-  table.insert(self.teamRed, Ranger(2, 5, 1, red))
-  table.insert(self.teamRed, Knight(1, 3, 1, red))
+  table.insert(self.teamBlue, Vampire(self.playfield.fieldSlots.entities[4], 3, blue))
+  table.insert(self.teamRed, Templar(self.playfield.fieldSlots.entities[11], 1, red))
+  table.insert(self.teamRed, Ranger(self.playfield.fieldSlots.entities[12], 1, red))
+  table.insert(self.teamRed, Knight(self.playfield.fieldSlots.entities[13], 1, red))
   -- table.insert(self.teamRed, Archer(4, 5, 1, red))
 
   for _, member in ipairs(self.teamBlue) do
@@ -46,7 +51,7 @@ function Game:setup()
     member:setup(self.teamRed,self.teamBlue)
   end
 
-  --setup benchslot
+  -- setup benchslot
   self.benchslots = {}
   table.insert(self.benchslots, Benchslot(10, 650))
   table.insert(self.benchslots, Benchslot(90, 650))
@@ -78,8 +83,7 @@ function Game:draw()
     benchslot:draw()
   end
 
-  --draw playfield
-  playfield:draw()
+  self.playfield:draw()
 
   --draw UI for health & money
   love.graphics.rectangle('line', 10, 740, 380, 30)
@@ -89,7 +93,7 @@ function Game:draw()
   --write health
   love.graphics.print(self.hp, 50, 748, 0, 1, 1)
   --draw coin
-  love.graphics.draw(Sprites.coin, 210, 745, 0, 1.5, 1.5)
+  love.graphics.draw(Sprites.coin, 210, 745, 0, 2, 2)
 
   ---draw tablets
   for _, member in ipairs(self.teamBlue) do
@@ -113,10 +117,18 @@ end
 
 function Game:mousepressed(x, y)
   self.map:mousepressed(x, y)
+
+  for _, member in ipairs(self.teamBlue) do member:mousepressed(x, y) end
+  for _, member in ipairs(self.teamRed) do member:mousepressed(x, y) end
 end
 
 function Game:mousemoved(x, y)
   self.map:mousemoved(x, y)
+end
+
+function Game:mousereleased(x, y)
+  for _, member in ipairs(self.teamBlue) do member:mousereleased(x, y) end
+  for _, member in ipairs(self.teamRed) do member:mousereleased(x, y) end
 end
 
 function Game:destroyDeadTablets()

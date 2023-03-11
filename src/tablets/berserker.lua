@@ -20,7 +20,7 @@ end
 
 function Berserker:_draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.tablets.berserker, self.x, self.y, 0, 1.5, 1.5)
+  love.graphics.draw(Sprites.tablets.berserker, self.x, self.y, 0, 2, 2)
 end
 
 function Berserker:normalAttack(damage)

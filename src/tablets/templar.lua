@@ -18,7 +18,7 @@ end
 
 function Templar:_draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.tablets.templar, self.x, self.y, 0, 1.5, 1.5)
+  love.graphics.draw(Sprites.tablets.templar, self.x, self.y, 0, 2, 2)
 end
 
 function Templar:skillUse()

@@ -41,4 +41,8 @@ function HUD:draw()
   self.benchSlots:draw()
 end
 
+function HUD:onTabletReleased(tablet)
+  
+end
+
 return HUD

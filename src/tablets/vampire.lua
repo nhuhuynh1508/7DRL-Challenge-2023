@@ -44,7 +44,7 @@ end
 
 function Vampire:_draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(Sprites.tablets.vampire, self.x, self.y, 0, 1.5, 1.5)
+  love.graphics.draw(Sprites.tablets.vampire, self.x, self.y, 0, 2, 2)
 end
 
 function Vampire:skillUse()

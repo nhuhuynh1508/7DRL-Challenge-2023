@@ -4,9 +4,12 @@ local Tablet = Class('Tablet')
 healthBarWidth = 50
 healthBarHeight = 6
 
-function Tablet:initialize(column, row, level, color)
+function Tablet:initialize(slot, level, color)
   --Draw attribute
-  self.row, self.column = row, column
+  -- self.attachedSlot = {x = self.x, y = self.y}
+  slot:attachTablet(self)
+  self.attachedSlot = slot
+  self.row, self.column = slot.gy, slot.gx
   self.color = color
   self.gap = spacing + cellSize
   self.x, self.y = fieldOffset[1] + self.gap*self.column + 13, fieldOffset[2] + self.gap*self.row + 13
@@ -27,12 +30,13 @@ function Tablet:initialize(column, row, level, color)
   self.range = 7.0
   self.type = 'default'
   self.dmgReduced = 0
+
+  self.timer = Timer.new()
 end
 
 function Tablet:setup(allies, enemies)
   self.allies = allies
   self.enemies = enemies
-  self.timer = Timer.new()
 
   self.isDead, self.isStunned = false
   self.norAtkWait, self.skillWait = false, false
@@ -40,6 +44,15 @@ end
 
 function Tablet:update(dt)
   self.timer:update(dt)
+
+  if self.attachedSlot then
+    self.x, self.y = self.attachedSlot.x - 8, self.attachedSlot.y - 10
+  elseif self.attachedSlot == nil then
+    self.x, self.y = love.mouse.getPosition()
+    self.x = self.x - 25
+    self.y = self.y - 27
+  end
+
   if not self.isDead then
     if not self.isStunned then
       if not self.norAtkWait then
@@ -209,6 +222,26 @@ end
 function Tablet:stunned(time)
   self.isStunned = true
   self.timer:after(time, function() self.isStunned = false end)
+end
+
+function Tablet:setAttachedSlot(slot)
+  self.attachedSlot = slot
+end
+
+function Tablet:mousepressed(x, y)
+  if self.x < x and x < self.x + 50 and
+      self.y < y and y < self.y + 54 then
+    Gamestate.current().playfield:onTabletPressed(self, x, y)
+    
+    self.attachedSlot:detachTablet()
+    self.attachedSlot = nil
+  end
+end
+
+function Tablet:mousereleased(x, y)
+  if self.attachedSlot == nil then
+    Gamestate.current().playfield:onTabletReleased(self, x, y)
+  end
 end
 
 return Tablet

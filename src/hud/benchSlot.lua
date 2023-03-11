@@ -1,9 +1,9 @@
-local Entity = require 'src.entity'
+local Slot = require 'src.dragAndDrop.slot'
 
-local BenchSlot = Class('BenchSlot', Entity)
+local BenchSlot = Class('BenchSlot', Slot)
 
 function BenchSlot:initialize(x, y)
-  self.x, self.y = x, y
+  Slot.initialize(self, x, y)
 end
 
 function BenchSlot:draw()

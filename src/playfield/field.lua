@@ -7,19 +7,42 @@ function Field:initialize()
   --Global variable in game.lua (cellSize, spacing)
   self.rate = 0.7
   self.fieldSlots = Manager()
-  for gx = 1, 3 do
-    for gy = 1, 3
-     do
-      local x = fieldOffset[1] + 28 + gx * (cellSize + spacing)
-      local y = fieldOffset[2] + 180 + gy * (cellSize + spacing)
+  for gx = 1, 5 do
+
+    for gy = 1, 3 do
+      local x = math.floor(fieldOffset[1] - 56 + gx * (cellSize + spacing))
+      local y = math.floor(fieldOffset[2] + 152 + gy * (cellSize + spacing))
       
-      self.fieldSlots:add(FieldSlot(x, y))
+      self.fieldSlots:add(FieldSlot(x, y, gx, gy))
     end
   end
+
+  self.originalAttachedSlot = nil
+end
+
+function Field:getSlotFromGridPos()
+end
+
+function Field:onTabletPressed(tablet, x, y)
+  self.originalAttachedSlot = tablet.attachedSlot
+end
+
+function Field:onTabletReleased(tablet, x, y)
+  local solved = false
+  for i, slot in ipairs(self.fieldSlots.entities) do
+    solved = slot:onTabletReleased(tablet, x, y)
+    if solved then break end
+  end
+
+  if not solved then
+    self.originalAttachedSlot:attachTablet(tablet)
+    tablet.attachedSlot = self.originalAttachedSlot
+  end
+
+  self.originalAttachedSlot = nil
 end
 
 function Field:draw()
-  
   --draw the battlefield
   love.graphics.rectangle("fill", 0, 0, 400, 600)
   
@@ -40,7 +63,7 @@ function Field:draw()
   -- set back to default
   love.graphics.setColor(love.math.colorFromBytes(219, 161, 89))
 
-  -- self.fieldSlots:draw()
+  self.fieldSlots:draw()
 end
 
 return Field
